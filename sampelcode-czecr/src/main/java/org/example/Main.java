@@ -28,8 +28,8 @@ public class Main {
         String deviceUser = "czpartnership3"; //TODO Please Change with your userName
         String callbackURL = "https://webhook.site/bd2a7577-7641-4e90-9e11-c1759c04b3a7"; //TODO please change with your callbackURL
         long timestamp = getCurrentTimestamp();
-        String requestId = String.format("ReqId%d", timestamp); //TODO Format -> ReqId+timestamp
-        String postTypeRequest = String.format("sampelcodeECR%d", timestamp); //TODO Format -> nameMerchant+timestamp
+        String requestId = String.format("ReqId-%d", timestamp); //TODO Format -> ReqId+timestamp
+        String postTypeRequest = String.format("sampelcodeECR-%d", timestamp); //TODO Format -> nameMerchant+timestamp
         String amount = "1112"; //TODO change your amount;
 
         OkHttpClient client = new OkHttpClient();
