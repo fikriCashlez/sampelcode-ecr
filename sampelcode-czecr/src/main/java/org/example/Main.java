@@ -14,19 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
+    private static String URL = "https://viper.cashlez.com/MmBridgeApi/v1/payment-request"; //TODO: BASE URL Development
 
-    private static String URL = "viper.cashlez.com/"; //TODO: BASE URL
-
+//    private static String URL = "https://oarfish.cashlez.com/MmApiEcrHost/v1/payment-request"; //TODO: BASE URL Production
     public static void main(String[] args) {
         Security.addProvider(new BouncyCastleProvider());
         doPaymentRequestECR();
     }
 
     private static void doPaymentRequestECR() {
-        String endPoint = "https://" + URL + "/MmBridgeApi/v1/payment-request";
-        String clientId = "CLID-9512DD2103143019";
-        String deviceUser = "czpartnership3"; //TODO Please Change with your userName
-        String callbackURL = "https://webhook.site/bd2a7577-7641-4e90-9e11-c1759c04b3a7"; //TODO please change with your callbackURL
+        String endPoint = URL ;
+        String clientId = "CLID-9512DD2103143019"; //TODO provide by cashlez
+        String deviceUser = "czpartnership2"; //TODO Please Change with your userName
+        String callbackURL = "https://webhook.site/c70f51e1-c10b-4aba-b156-ae6cdbf0246f"; //TODO please change with your callbackURL
         long timestamp = getCurrentTimestamp();
         String requestId = String.format("ReqId-%d", timestamp); //TODO Format -> ReqId+timestamp
         String postTypeRequest = String.format("sampelcodeECR-%d", timestamp); //TODO Format -> nameMerchant+timestamp
@@ -39,7 +39,7 @@ public class Main {
         jsonBody.put("request_id", requestId);
         jsonBody.put("client_id", clientId);
         jsonBody.put("device_user", deviceUser);
-        jsonBody.put("payment_method", "CDCP");
+        jsonBody.put("payment_method", "CDCP"); //TODO PAYMENT CHANNEL
         jsonBody.put("amount", amount);
         jsonBody.put("callback_url", callbackURL);
 
@@ -54,6 +54,7 @@ public class Main {
                 .url(endPoint)
                 .post(requestBody)
                 .addHeader("Content-Type", "application/json")
+                .addHeader("ApiKey", "ZLMHQGKPYDXAWJTIEMNLCBVRXPKHFZJUGYQAVRZKWNBQPRTDHZKUJPOWSFTAXQXKJQDQPRZMVLQZUSWOSLYPKNNBXOIJFDJBOQWI")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -68,9 +69,11 @@ public class Main {
             String responseBody = response.body().string();
             System.out.println("Response body------------:\n" + responseBody);
 
-            // Parsing JSON untuk ambil token
+            // Parsing JSON get ws_token
             JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
             if (jsonObject.get("ws_token").getAsString() != null) {
+
+                //TODO f
                 doPaymentSubscribe(jsonObject.get("ws_token").getAsString(), requestId);
                 System.out.println("✅WS Token------------: " + jsonObject.get("ws_token").getAsString());
             } else {
@@ -89,7 +92,8 @@ public class Main {
 
     public static void doPaymentSubscribe(String wsToken, String requestId) {
         try {
-            URI uri = new URI("wss://" + URL + "MmBridgeApi/v1/ws/payment-subscribe");
+            URI uri = new URI("wss://viper.cashlez.com/MmBridgeApi/v1/ws/payment-subscribe"); // TODO BASE URL DEVELOPMENT
+//            URI uri = new URI("wss://oarfish.cashlez.com/MmApiEcrHost/v1/ws/payment-subscribe"); // TODO BASE URL PRODUCTION
 
             //TODO add Header
             Map<String, String> headers = new HashMap<>();
